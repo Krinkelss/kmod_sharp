@@ -111,6 +111,11 @@ public class ITEMS
 	/// Защищённый контейнер
 	/// </summary>
 	public SecureContainer? SecureContainers { get; set; }
+
+	/// <summary>
+	/// Убрать фильтры для защищённых контейнеров
+	/// </summary>
+	public bool RemoveSecureContainerFilters { get; set; }
 }
 //************************************************************************************
 
@@ -252,17 +257,22 @@ public class RAGFAIR
 	/// <summary>
 	/// Шанс продажи на барахолке
 	/// </summary>
-	public int Sell_chancet { get; set; }
+	public int Sell_chance { get; set; }
 
 	/// <summary>
 	/// Шанс продажи за дорого
 	/// </summary>
-	public int Sell_overpricet { get; set; }
+	public int Sell_overprice { get; set; }
 
 	/// <summary>
 	/// Шанс продажи за дёшево
 	/// </summary>
-	public int Sell_underpricet { get; set; }
+	public int Sell_underprice { get; set; }
+
+	/// <summary>
+	/// Множитель к шансу продажи. Чем ниже цена тем выше шанс продажи
+	/// </summary>
+	public double Sell_mult { get; set; }
 
 	/// <summary>
 	/// Максимальное время
@@ -283,5 +293,5 @@ public class KConfig
 	public WEAPON? Weapons { get; set; }
 	public PLAYER? Player { get; set; }
 	public RAIDS? Raids { get; set; }
-	public RAGFAIR Ragfair { get; set; }
+	public RAGFAIR? Ragfair { get; set; }
 }

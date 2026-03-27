@@ -23,17 +23,17 @@ namespace KMOD;
 
 public record ModMetadata : AbstractModMetadata
 {
-	public override string? ModGuid { get; init; } = "74be107d-80b0-47e5-8b4c-84d2e4ff5850";
-	public override string? Name { get; init; } = "KMOD";
-	public override string? Author { get; init; } = "Krinkels";
+	public override string ModGuid { get; init; } = "74be107d-80b0-47e5-8b4c-84d2e4ff5850";
+	public override string Name { get; init; } = "KMOD";
+	public override string Author { get; init; } = "Krinkels";
 	public override List<string>? Contributors { get; init; }
-	public override SemanticVersioning.Version Version { get; init; } = new( "1.4.0" );
-	public override SemanticVersioning.Range SptVersion { get; init; } = new( "4.0.0" );
+	public override SemanticVersioning.Version Version { get; init; } = new( "1.4.1" );
+	public override SemanticVersioning.Range SptVersion { get; init; } = new( "~4.0.0" );
 	public override List<string>? Incompatibilities { get; init; }
 	public override Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
 	public override string? Url { get; init; } = "https://github.com/Krinkelss/kmod_sharp";
 	public override bool? IsBundleMod { get; init; } = false;
-	public override string? License { get; init; } = "MIT";
+	public override string License { get; init; } = "MIT";
 }
 
 [Injectable( TypePriority = OnLoadOrder.PostDBModLoader + 1 )]
@@ -63,7 +63,7 @@ public class KMOD(
 		// Загружаем наши настройки
 		var pathToMod = modHelper.GetAbsolutePathToModFolder( Assembly.GetExecutingAssembly() );
 
-		KConfig Config = null;
+		KConfig Config;
 		try
 		{
 			Config = JSON5.ToObject<KConfig>( modHelper.GetRawFileData( pathToMod, "Config.json5" ) );
@@ -82,7 +82,7 @@ public class KMOD(
 				var baseItem = items[ id ];
 
 				// Убрать лимит ключей
-				if( Config.Items?.RemoveKeysUsageNumber == true && ( ( baseItem.Parent == BaseClasses.KEY_MECHANICAL || baseItem.Parent == BaseClasses.KEYCARD ) && baseItem.Properties.MaximumNumberOfUsage != null ) )
+				if( Config.Items?.RemoveKeysUsageNumber == true && ( ( baseItem.Parent == BaseClasses.KEY_MECHANICAL || baseItem.Parent == BaseClasses.KEYCARD ) && baseItem.Properties?.MaximumNumberOfUsage != null ) )
 				{
 					// Одноразовые ключи используются только единожды
 					if( Config.Items?.AvoidSingleKeys == true && baseItem.Properties.MaximumNumberOfUsage == 1 )
@@ -94,7 +94,7 @@ public class KMOD(
 				}
 
 				// Насколько увеличить число патронов в ячейке
-				if( Config.Items?.StackMaxSize > 0 && baseItem.Parent == BaseClasses.AMMO && baseItem.Properties.StackMaxSize != null )
+				if( Config.Items?.StackMaxSize > 0 && baseItem.Parent == BaseClasses.AMMO && baseItem.Properties?.StackMaxSize != null )
 				{
 					baseItem.Properties.StackMaxSize += Config.Items?.StackMaxSize;
 				}
@@ -107,7 +107,7 @@ public class KMOD(
 				{
 					if( stage.Value.ConstructionTime > 0 && Config.Items?.HideoutConstMult != -1 )
 					{
-						stage.Value.ConstructionTime = Math.Max( 5, ( int )( stage.Value.ConstructionTime * Config.Items?.HideoutConstMult ) );
+						stage.Value.ConstructionTime = Math.Max( 5, ( int )( stage.Value.ConstructionTime * Config.Items.HideoutConstMult ) );
 					}
 					else
 					{
@@ -123,7 +123,7 @@ public class KMOD(
 				{
 					if( Config.Items?.HideoutProdMult != -1 )
 					{
-						area.ProductionTime = Math.Max( 5, ( int )( area.ProductionTime * Config.Items?.HideoutProdMult ) );
+						area.ProductionTime = Math.Max( 5, ( int )( area.ProductionTime * Config.Items.HideoutProdMult ) );
 					}
 					else
 					{
@@ -150,37 +150,49 @@ public class KMOD(
 			{
 				traderConfig.PurchasesAreFoundInRaid = true;
 			}
-
-			// Ремонт не изнашивает броню
-			if( Config.Items?.OpArmorRepair == true )
-			{
-				foreach( TemplateItem basetemplate in items.Values )
-				{
-					if( basetemplate.Properties?.MaxRepairDegradation is not null && basetemplate.Properties.MaxRepairKitDegradation is not null )
-					{
-						basetemplate.Properties.MinRepairDegradation = 0;
-						basetemplate.Properties.MaxRepairDegradation = 0;
-						basetemplate.Properties.MinRepairKitDegradation = 0;
-						basetemplate.Properties.MaxRepairKitDegradation = 0;
-					}
-				}
-			}
-
+									
 			// Ремонт не изнашивает оружие
 			if( Config.Items?.OpGunRepair == true )
-			{
-				foreach( var item in items.Values )
+			{				
+				foreach( var armor in globals.ArmorMaterials )
 				{
-					foreach( var armor in globals.ArmorMaterials )
-					{
-						armor.Value.MaxRepairDegradation = 0;
-						armor.Value.MinRepairDegradation = 0;
-						armor.Value.MaxRepairKitDegradation = 0;
-						armor.Value.MinRepairKitDegradation = 0;
-					}
+					armor.Value.MaxRepairDegradation = 0;
+					armor.Value.MinRepairDegradation = 0;
+					armor.Value.MaxRepairKitDegradation = 0;
+					armor.Value.MinRepairKitDegradation = 0;
 				}
 			}
 
+			foreach( TemplateItem basetemplate in items.Values )
+			{
+				// Ремонт не изнашивает броню
+				if( Config.Items?.OpArmorRepair == true && basetemplate.Properties?.MaxRepairDegradation is not null && basetemplate.Properties.MaxRepairKitDegradation is not null )
+				{
+					basetemplate.Properties.MinRepairDegradation = 0;
+					basetemplate.Properties.MaxRepairDegradation = 0;
+					basetemplate.Properties.MinRepairKitDegradation = 0;
+					basetemplate.Properties.MaxRepairKitDegradation = 0;
+				}
+
+				// Убрать фильтры для защищённых контейнеров
+				if( Config.Items?.RemoveSecureContainerFilters == true && basetemplate.Parent == "5448bf274bdc2dfc2f8b456a" && basetemplate.Id != ItemTpl.SECURE_CONTAINER_BOSS )
+				{
+					var gridsfilters = basetemplate?.Properties?.Grids?.ToList();
+					gridsfilters?.ForEach( Grid =>
+					{
+						if( Grid?.Properties?.Filters is not null )
+						{
+							var filters = Grid.Properties.Filters.ToList();
+							filters[ 0 ].Filter.Clear();
+							filters[ 0 ].Filter.Add( new MongoId( "54009119af1c881c07000029" ) );
+							filters[ 0 ].ExcludedFilter = [];
+							Grid.Properties.Filters = filters;
+						}
+					} );
+					basetemplate.Properties.Grids = gridsfilters;
+				}
+			}
+						
 			// Изменить размер защищённого контейнера
 			/*if( Config.Items?.SecureContainers?.Enable == true )
 			{
@@ -365,13 +377,16 @@ public class KMOD(
 			Ragfair.Dynamic.Blacklist.EnableBsgList = Config.Ragfair.DisableBSGList != true;
 
 			// Шанс продажи на барахолке
-			Ragfair.Sell.Chance.Base = Config.Ragfair.Sell_chancet;
+			Ragfair.Sell.Chance.Base = Config.Ragfair.Sell_chance;
 
 			// Шанс продажи за дорого
-			Ragfair.Sell.Chance.MaxSellChancePercent = Config.Ragfair.Sell_overpricet;
+			Ragfair.Sell.Chance.MaxSellChancePercent = Config.Ragfair.Sell_overprice;
 
 			// Шанс продажи за дёшево
-			Ragfair.Sell.Chance.MinSellChancePercent = Config.Ragfair.Sell_underpricet;
+			Ragfair.Sell.Chance.MinSellChancePercent = Config.Ragfair.Sell_underprice;
+
+			// Множитель к шансу продажи. Чем ниже цена тем выше шанс продажи
+			Ragfair.Sell.Chance.SellMultiplier = Config.Ragfair.Sell_mult;
 
 			// Максимальное время
 			Ragfair.Sell.Time.Max = Config.Ragfair.Tradeoffer_max;
@@ -433,7 +448,7 @@ public class MY_PROFILE(
 // Для квеста Механика "Оружейник"
 [Injectable( TypePriority = OnLoadOrder.PostDBModLoader + 1 )]
 public class WPMOD(
-	ISptLogger<WPMOD> logger,
+	//ISptLogger<WPMOD> logger,
 	ModHelper modHelper,
 	FileUtil fileUtil,
 	JsonUtil jsonUtil,

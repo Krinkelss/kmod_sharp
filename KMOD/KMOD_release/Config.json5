@@ -1,20 +1,19 @@
 {
 	"Items":
 	{
-		"Enable":true,						// Вкл/выкл настройки предметов
-		"RemoveKeysUsageNumber":true,		// Убрать лимит ключей
-		"AvoidSingleKeys":true,				// Одноразовые ключи используются только единожды		
-		"StackMaxSize":150,					// Насколько увеличить число патронов в ячейке	
+		"Enable":true,							// Вкл/выкл настройки предметов
+		"RemoveKeysUsageNumber":true,			// Убрать лимит ключей
+		"AvoidSingleKeys":true,					// Одноразовые ключи используются только единожды		
+		"StackMaxSize":150,						// Насколько увеличить число патронов в ячейке	
 					
-		"HideoutConstMult":-1,				// Множитель времени постройки в убежище. Меньше - быстрее. При -1 мгновенная постройка
-		"HideoutProdMult":-1,				// Множитель времени производства. Меньше - быстрее		
-		"BitcoinSellOnRagfair": true,		// Возможность продавать биткоин на барахолке
-		"CMSResource":10,					// Число использования CMS
-		"TraderPurchasesFoundInRaid":true,	// У всех торговцев товар "найден в рейде"
-		
+		"HideoutConstMult":-1,					// Множитель времени постройки в убежище. Меньше - быстрее. При -1 мгновенная постройка
+		"HideoutProdMult":-1,					// Множитель времени производства. Меньше - быстрее		
+		"BitcoinSellOnRagfair": true,			// Возможность продавать биткоин на барахолке
+		"Surv12UseTime":10,						// Время применения Surv12. Указывать точное время в секундах
+		"TraderPurchasesFoundInRaid":true,		// У всех торговцев товар "найден в рейде"
 		"OpArmorRepair":true,				// Ремонт не изнашивает броню
 		"OpGunRepair":true,					// Ремонт не изнашивает оружие
-		"NoRandomRepair": true,				// Убрать элемент случайности при починке
+		"RemoveSecureContainerFilters": true,	// Убрать фильтры для защищённых контейнеров
 		
 		"SecureContainers":
 		{
