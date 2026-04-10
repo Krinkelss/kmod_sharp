@@ -393,6 +393,8 @@ public class KMOD(
 
 			// Минимальное время
 			Ragfair.Sell.Time.Min = Config.Ragfair.Tradeoffer_min;
+
+			Ragfair.Dynamic.PurchasesAreFoundInRaid = Config.Ragfair.FleaFIR;
 		}
 
 		//logger.Info( "	------------------------------End" );

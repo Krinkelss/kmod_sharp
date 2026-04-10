@@ -115,7 +115,7 @@ public class ITEMS
 	/// <summary>
 	/// Убрать фильтры для защищённых контейнеров
 	/// </summary>
-	public bool RemoveSecureContainerFilters { get; set; }
+	public bool RemoveSecureContainerFilters { get; set; }	
 }
 //************************************************************************************
 
@@ -283,6 +283,11 @@ public class RAGFAIR
 	/// Минимальное время
 	/// </summary>
 	public int Tradeoffer_min { get; set; }
+
+	/// <summary>
+	/// Товары на барахолке продаются с галочкой
+	/// </summary>
+	public bool FleaFIR { get; set; }
 }
 
 //************************************************************************************
