@@ -292,6 +292,36 @@ public class RAGFAIR
 
 //************************************************************************************
 
+public class EVENT
+{
+	/// <summary>
+	/// Вкл/выкл настройки Bdtynjd
+	/// </summary>
+	public bool Enable { get; set; }
+
+	/// <summary>
+	/// Переопределить бомжей на рейдеров
+	/// </summary>
+	public bool AITypeOverride { get; set; }
+
+	/// <summary>
+	/// Тагилла сопровождает киллу на развязке
+	/// </summary>
+	public bool TagillaInterchange { get; set; }
+
+	/// <summary>
+	/// Килла сопровождает Тагиллу на заводе
+	/// </summary>
+	public bool KillaFactory { get; set; }
+
+	/// <summary>
+	/// Все боссы на резерве
+	/// </summary>
+	public bool BossesOnReserve { get; set; }
+}
+
+//************************************************************************************
+
 public class KConfig
 {
 	public ITEMS? Items { get; set; }
@@ -299,4 +329,5 @@ public class KConfig
 	public PLAYER? Player { get; set; }
 	public RAIDS? Raids { get; set; }
 	public RAGFAIR? Ragfair { get; set; }
+	public EVENT? Events { get; set; }
 }

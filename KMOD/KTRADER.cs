@@ -29,9 +29,10 @@ namespace KMOD
 		ConfigServer configServer,
 		TimeUtil timeUtil,
 		ICloner cloner,
-		DatabaseService databaseService,
-		CustomItemService customitemservice, 
-		LocaleService localeService )
+		DatabaseService databaseService
+		//CustomItemService customitemservice, 
+		//LocaleService localeService 
+		)
 	{
 		private readonly TraderConfig _traderConfig = configServer.GetConfig<TraderConfig>();
 		private readonly RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
@@ -137,13 +138,14 @@ namespace KMOD
 			{
 				Assort = emptyTraderItemAssortObject,
 				Base = cloner.Clone( traderDetailsToAdd ),
-				QuestAssort = new Dictionary<string, Dictionary<string, string>> // quest assort is empty as trader has no assorts unlocked by quests
-				{
-					// We create 3 empty arrays, one for each of the main statuses that are possible
-					{ "Started", new Dictionary<string, string>() },
-					{ "Success", new Dictionary<string, string>() },
-					{ "Fail", new Dictionary<string, string>() }
-				}
+				QuestAssort = new() // quest assort is empty as trader has no assorts unlocked by quests
+                {
+                    // We create 3 empty arrays, one for each of the main statuses that are possible
+                    { "Started", new() },
+					{ "Success", new() },
+					{ "Fail", new() }
+				},
+				Dialogue = []
 			};
 
 			// Add the new trader id and data to the server

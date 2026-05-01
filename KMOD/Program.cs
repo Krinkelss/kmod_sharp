@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Hideout;
 using SPTarkov.Server.Core.Models.Spt.Mod;
@@ -17,6 +18,9 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Threading;
 using System.Xml.Linq;
 
 namespace KMOD;
@@ -27,7 +31,7 @@ public record ModMetadata : AbstractModMetadata
 	public override string Name { get; init; } = "KMOD";
 	public override string Author { get; init; } = "Krinkels";
 	public override List<string>? Contributors { get; init; }
-	public override SemanticVersioning.Version Version { get; init; } = new( "1.4.1" );
+	public override SemanticVersioning.Version Version { get; init; } = new( "1.4.2" );
 	public override SemanticVersioning.Range SptVersion { get; init; } = new( "~4.0.0" );
 	public override List<string>? Incompatibilities { get; init; }
 	public override Dictionary<string, SemanticVersioning.Range>? ModDependencies { get; init; }
@@ -395,6 +399,86 @@ public class KMOD(
 			Ragfair.Sell.Time.Min = Config.Ragfair.Tradeoffer_min;
 
 			Ragfair.Dynamic.PurchasesAreFoundInRaid = Config.Ragfair.FleaFIR;
+		}
+
+		// Настройка ивентов
+		if( Config.Events?.Enable == true )
+		{
+			// Переопределить бомжей на рейдеров
+			if( Config.Events.AITypeOverride == true )
+			{
+				botConfig.ReplaceScavWith = WildSpawnType.pmcBot;
+			}
+
+			// Тагилла сопровождает киллу на развязке
+			if( Config.Events.TagillaInterchange == true )
+			{
+				foreach( var bosses in mapsDb.Interchange.Base.BossLocationSpawn )
+				{
+					if( bosses.BossName == "bossKilla" )
+					{
+						bosses.BossEscortAmount = "1";
+						bosses.BossEscortType = "bossTagilla";
+					}
+				}
+			}
+
+			// Килла сопровождает Тагиллу на заводе
+			if( Config.Events.KillaFactory == true )
+			{
+				foreach( var bosses in mapsDb.Factory4Day.Base.BossLocationSpawn )
+				{
+					if( bosses.BossName == "bossTagilla" )
+					{
+						bosses.BossEscortAmount = "1";
+						bosses.BossEscortType = "bossKilla";
+					}
+				}
+
+				foreach( var bosses in mapsDb.Factory4Night.Base.BossLocationSpawn )
+				{
+					if( bosses.BossName == "bossTagilla" )
+					{
+						bosses.BossEscortAmount = "1";
+						bosses.BossEscortType = "bossKilla";
+					}
+				}
+			}
+
+			// Все боссы на резерве
+			if( Config.Events.BossesOnReserve == true )
+			{
+				JsonNode loadName = JsonNode.Parse( File.ReadAllText( System.IO.Path.Combine( pathToMod, "Misc", "Waves.json" ) ) );
+				BossLocationSpawn kaban = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Kaban" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				BossLocationSpawn kolontay = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Kolontay" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossKilla", 100, mapsDb.RezervBase.Base.OpenZones, "followerBully", "0" ) );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossTagilla", 100, mapsDb.RezervBase.Base.OpenZones, "followerBully", "0" ) );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossSanitar", 100, mapsDb.RezervBase.Base.OpenZones, "followerSanitar", "4" ) );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossKojaniy", 100, mapsDb.RezervBase.Base.OpenZones, "followerKojaniy", "4" ) );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossBully", 100, mapsDb.RezervBase.Base.OpenZones, "followerBully", "4" ) );
+				
+				kolontay.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				kaban.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( kolontay );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( kaban );
+			}
+
+			BossLocationSpawn CreateBasicBossWave( string bossname, double bosschance, string zones, string escorttype, string escortamount )
+			{
+				return new BossLocationSpawn
+				{
+					BossName = bossname,
+					BossChance = bosschance,
+					BossZone = zones,
+					IsBossPlayer = false,
+					BossDifficulty = "normal",
+					BossEscortType = escorttype,
+					BossEscortDifficulty = "normal",
+					BossEscortAmount = escortamount,
+					Time = -1
+				};
+			}
 		}
 
 		//logger.Info( "	------------------------------End" );

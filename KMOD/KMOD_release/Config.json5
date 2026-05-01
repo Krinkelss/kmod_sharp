@@ -90,5 +90,14 @@
 		"Tradeoffer_min":0,					// Минимальное время
 		
 		"FleaFIR":true						// Товары на барахолке продаются с галочкой
+	},
+	
+	"Events":
+	{
+		"Enable":true,
+		"AITypeOverride":true,				// Переопределить бомжей на рейдеров
+		"TagillaInterchange":true,			// Тагилла сопровождает киллу на развязке
+		"KillaFactory":true,				// Килла сопровождает Тагиллу на заводе
+		"BossesOnReserve":true				// Все боссы на резерве
 	}
 }

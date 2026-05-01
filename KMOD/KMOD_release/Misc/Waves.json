@@ -1,0 +1,102 @@
+{
+	"Kaban": 
+	{
+		"BossChance": 100,
+		"BossDifficult": "normal",
+		"BossEscortAmount": "6",
+		"BossEscortDifficult": "normal",
+		"BossEscortType": "followerBoar",
+		"BossName": "bossBoar",
+		"BossPlayer": false,
+		"BossZone": "",
+		"Delay": 0,
+		"ForceSpawn": false,
+		"IgnoreMaxBots": true,
+		"RandomTimeSpawn": false,
+		"SpawnMode": 
+		[
+			"regular",
+			"pve"
+		],
+		"Supports": 
+		[
+			{
+				"BossEscortAmount": "4",
+				"BossEscortDifficult": 
+				[
+					"normal"
+				],
+				"BossEscortType": "followerBoar"
+			},
+			{
+				"BossEscortAmount": "1",
+				"BossEscortDifficult": 
+				[
+					"normal"
+				],
+				"BossEscortType": "followerBoarClose1"
+			},
+			{
+				"BossEscortAmount": "1",
+				"BossEscortDifficult": 
+				[				
+					"normal"
+				],
+				"BossEscortType": "followerBoarClose2"
+			}
+		],
+		"Time": -1,
+		"TriggerId": "",
+		"TriggerName": ""
+	},
+	"Kolontay": 
+	{
+		"BossChance": 100,
+		"BossDifficult": "normal",
+		"BossEscortAmount": "2",
+		"BossEscortDifficult": "normal",
+		"BossEscortType": "followerKolontaySecurity",
+		"BossName": "bossKolontay",
+		"BossPlayer": false,
+		"BossZone": "",
+		"Delay": 0,
+		"ForceSpawn": false,
+		"IgnoreMaxBots": true,
+		"RandomTimeSpawn": false,
+		"SpawnMode": 
+		[
+			"regular",
+			"pve"
+		],
+		"Supports": 
+		[
+			{
+				"BossEscortAmount": "2",
+				"BossEscortDifficult": 
+				[
+					"normal"
+				],
+				"BossEscortType": "followerKolontayAssault"
+			},
+			{
+				"BossEscortAmount": "2",
+				"BossEscortDifficult": 
+				[
+					"normal"
+				],
+				"BossEscortType": "followerKolontaySecurity"
+			},
+			{
+				"BossEscortAmount": "0",
+				"BossEscortDifficult": 
+				[
+					"normal"
+				],
+				"BossEscortType": "followerGluharScout"
+			}
+		],
+		"Time": -1,
+		"TriggerId": "",
+		"TriggerName": ""
+	}
+}
