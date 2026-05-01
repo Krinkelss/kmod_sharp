@@ -46,6 +46,7 @@ public class KMOD(
 	//HashUtil hashUtil,
 	DatabaseService databaseService,
 	//TraderController traderController,
+	JsonUtil jsonUtil,
 	ModHelper modHelper,
 	ConfigServer _configServer
 ) : IOnLoad
@@ -449,36 +450,67 @@ public class KMOD(
 			if( Config.Events.BossesOnReserve == true )
 			{
 				JsonNode loadName = JsonNode.Parse( File.ReadAllText( System.IO.Path.Combine( pathToMod, "Misc", "Waves.json" ) ) );
-				BossLocationSpawn kaban = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Kaban" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
-				BossLocationSpawn kolontay = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Kolontay" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				//BossLocationSpawn kaban = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Kaban" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				//BossLocationSpawn kolontay = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Kolontay" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
 
-				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossKilla", 100, mapsDb.RezervBase.Base.OpenZones, "followerBully", "0" ) );
+				/*mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossKilla", 100, mapsDb.RezervBase.Base.OpenZones, "followerBully", "0" ) );
 				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossTagilla", 100, mapsDb.RezervBase.Base.OpenZones, "followerBully", "0" ) );
 				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossSanitar", 100, mapsDb.RezervBase.Base.OpenZones, "followerSanitar", "4" ) );
 				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossKojaniy", 100, mapsDb.RezervBase.Base.OpenZones, "followerKojaniy", "4" ) );
-				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossBully", 100, mapsDb.RezervBase.Base.OpenZones, "followerBully", "4" ) );
-				
-				kolontay.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( CreateBasicBossWave( "bossBully", 100, mapsDb.RezervBase.Base.OpenZones, "followerBully", "4" ) );*/
+
+				/*kolontay.BossZone = mapsDb.RezervBase.Base.OpenZones;
 				kaban.BossZone = mapsDb.RezervBase.Base.OpenZones;
 				mapsDb.RezervBase.Base.BossLocationSpawn.Add( kolontay );
-				mapsDb.RezervBase.Base.BossLocationSpawn.Add( kaban );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( kaban );*/
+
+				BossLocationSpawn Killa = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Killa" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				BossLocationSpawn Tagilla = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Tagilla" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				BossLocationSpawn Sanitar = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Sanitar" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				BossLocationSpawn Bully = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Bully" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				BossLocationSpawn Knight = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Knight" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				BossLocationSpawn Kaban = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Kaban" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+				BossLocationSpawn Kolontay = JsonSerializer.Deserialize<BossLocationSpawn>( loadName![ "Kolontay" ]!.ToString(), JsonUtil.JsonSerializerOptionsIndented )!;
+
+				Killa.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				Tagilla.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				Sanitar.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				Bully.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				Knight.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				Kaban.BossZone = mapsDb.RezervBase.Base.OpenZones;
+				Kolontay.BossZone = mapsDb.RezervBase.Base.OpenZones;
+
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( Killa );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( Tagilla );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( Sanitar );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( Bully );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( Knight );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( Kaban );
+				mapsDb.RezervBase.Base.BossLocationSpawn.Add( Kolontay );
+
+				//logger.LogWithColor( JsonSerializer.Serialize( mapsDb.RezervBase.Base.BossLocationSpawn, new JsonSerializerOptions { WriteIndented = true } ), LogTextColor.Cyan );
 			}
 
-			BossLocationSpawn CreateBasicBossWave( string bossname, double bosschance, string zones, string escorttype, string escortamount )
+			/*BossLocationSpawn CreateBasicBossWave( string bossname, double bosschance, string zones, string escorttype, string escortamount )
 			{
 				return new BossLocationSpawn
-				{
-					BossName = bossname,
-					BossChance = bosschance,
-					BossZone = zones,
-					IsBossPlayer = false,
+				{	BossChance = bosschance,
 					BossDifficulty = "normal",
-					BossEscortType = escorttype,
-					BossEscortDifficulty = "normal",
 					BossEscortAmount = escortamount,
-					Time = -1
-				};
-			}
+					BossEscortDifficulty = "normal",
+					BossEscortType = escorttype,
+					BossName = bossname,
+					IsBossPlayer = false,
+					BossZone = zones,
+					IsRandomTimeSpawn = false,
+					ShowOnTarkovMap = false,
+					ShowOnTarkovMapPvE = false,
+					Time = -1,
+					TriggerId = "",
+					TriggerName = "",
+					IgnoreMaxBots = true,
+					SpawnMode = [ "regular",	"pve" ]	};
+			}*/
 		}
 
 		//logger.Info( "	------------------------------End" );
